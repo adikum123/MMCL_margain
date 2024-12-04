@@ -83,7 +83,7 @@ with open(output_file, "w") as f:
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"========> Using device in test.py: {device}")
 model = SSLEval(hparams=hparams, device=device)
-model.prepare_data_new(train_size=None, test_size=1)
+model.prepare_data_new(train_size=hparams.batch_size, test_size=1)
 train_loader, test_loader = model.dataloaders()
 for test_batch in test_loader:
     for train_batch in train_loader:
@@ -93,7 +93,7 @@ for test_batch in test_loader:
                 negative_batch=train_batch,
                 **svm_params,
             )
-            margin = svm_solver.compute_margain()
+            margin = svm_solver.compute_margin()
             print(f"For params: {svm_params} margain is: {margin}")
             with open(output_file, "a") as f:
                 f.write(f"{str(svm_params):<50} | {margin:<20.4f}\n")

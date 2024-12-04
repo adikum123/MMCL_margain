@@ -1,7 +1,7 @@
 arch: linear
 aug: true
 augmentation: RandomResizedCrop
-batch_size: 4096
+batch_size: 10000
 ckpt: ''
 ckpt_iter: -1
 config_file: null
