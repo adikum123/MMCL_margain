@@ -97,3 +97,4 @@ for test_batch in test_loader:
             print(f"For params: {svm_params} margain is: {margin}")
             with open(output_file, "a") as f:
                 f.write(f"{str(svm_params):<50} | {margin:<20.4f}\n")
+        return
