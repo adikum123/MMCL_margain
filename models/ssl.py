@@ -768,13 +768,12 @@ class SSLEval(BaseSSL):
             type=float,
             help="The minimum scale factor for RandomResizedCrop",
         )
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def __init__(self, hparams, device=None):
         super().__init__(hparams)
 
         self.hparams.dist = getattr(self.hparams, "dist", "dp")
-
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if hparams.encoder_ckpt != "":
             ckpt = torch.load(hparams.encoder_ckpt, map_location=device)
             if getattr(ckpt["hparams"], "dist", "dp") == "ddp":
