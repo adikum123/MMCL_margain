@@ -34,7 +34,6 @@ class SVMSolver:
         # Access dual coefficients and support vectors
         dual_coefs = model.dual_coef_[0]  # Shape is (1, n_support_vectors)
         support_indices = model.support_
-        support_vectors = model.support_vectors_
         # Map dual coefficients to all samples
         full_dual_coefs = np.zeros(len(X))
         full_dual_coefs[support_indices] = dual_coefs
