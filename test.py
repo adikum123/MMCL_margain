@@ -83,7 +83,7 @@ with open(output_file, "w") as f:
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"========> Using device in test.py: {device}")
 model = SSLEval(hparams=hparams, device=device)
-model.prepare_data_new(train_size=100, test_size=1)
+model.prepare_data_new(train_size=1000, test_size=1)
 train_loader, test_loader = model.dataloaders()
 for test_batch in test_loader:
     for train_batch in train_loader:
