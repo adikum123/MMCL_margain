@@ -53,10 +53,8 @@ class SVMSolver:
             metric=self.svm_params["kernel"],
             **kernel_params,
         )
-        w_norm = math.sqrt(
-            np.dot(np.dot(full_dual_coefs, kernel_matrix), full_dual_coefs.T)
-        )
-        if w_norm > 0:
-            return 1 / w_norm
-        print(f"Suspicious norm: {w_norm}")
+        w_norm_sq = np.dot(np.dot(full_dual_coefs, kernel_matrix), full_dual_coefs.T)
+        if w_norm_sq > 0:
+            return 1 / math.sqrt(w_norm_sq)
+        print(f"Suspicious norm squared: {w_norm_sq}")
         return -1
