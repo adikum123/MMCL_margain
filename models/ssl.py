@@ -768,6 +768,7 @@ class SSLEval(BaseSSL):
             type=float,
             help="The minimum scale factor for RandomResizedCrop",
         )
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def __init__(self, hparams, device=None):
         super().__init__(hparams)
