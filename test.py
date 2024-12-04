@@ -93,7 +93,7 @@ for test_batch in test_loader:
                 negative_batch=train_batch,
                 **svm_params,
             )
-            margain = svm_solver.compute_margain()
-            print(f"For params: {svm_params} margain is: {margain}")
+            margin = svm_solver.compute_margain()
+            print(f"For params: {svm_params} margain is: {margin}")
             with open(output_file, "a") as f:
                 f.write(f"{str(svm_params):<50} | {margin:<20.4f}\n")
