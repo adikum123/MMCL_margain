@@ -30,9 +30,7 @@ class BaseSSL(nn.Module):
     DATA_ROOT = os.environ.get(
         "DATA_ROOT", os.path.dirname(os.path.abspath(__file__)) + "/data"
     )
-    IMAGENET_PATH = os.environ.get(
-        "IMAGENET_PATH", "/home/admir/Downloads/archive/tiny-imagenet-200"
-    )
+    IMAGENET_PATH = os.environ.get("IMAGENET_PATH", "tiny-imagenet-200")
 
     def __init__(self, hparams):
         super().__init__()
