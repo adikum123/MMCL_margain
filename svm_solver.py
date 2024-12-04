@@ -12,7 +12,7 @@ class SVMSolver:
         self,
         positive_batch,
         negative_batch,
-        **svm_params  # Accept any SVM parameters dynamically
+        **svm_params,  # Accept any SVM parameters dynamically
     ):
         # Store positive and negative samples
         self.positive_samples = positive_batch[0]
@@ -51,8 +51,12 @@ class SVMSolver:
         kernel_matrix = pairwise_kernels(
             X=np.vstack((self.positive_samples, self.negative_samples)),
             metric=self.svm_params["kernel"],
-            **kernel_params
+            **kernel_params,
         )
-        return 1 / math.sqrt(
+        w_norm = 1 / math.sqrt(
             np.dot(np.dot(full_dual_coefs, kernel_matrix), full_dual_coefs.T)
         )
+        if w_norm > 0:
+            return 1 / math.sqrt(w_norm)
+        print(f"Suspicious norm: {w_norm}")
+        return -1
