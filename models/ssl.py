@@ -919,7 +919,7 @@ class SSLEval(BaseSSL):
             # Compute embeddings for the dataset
             for x, y in tqdm(loader):
                 if self.hparams.data in ["imagenet", "imagenet100"]:
-                    x = x.to(torch.device("cpu"))
+                    x = x.to(self.device)
                     x = x / 255.0
                 e = self.encode(x)
                 embs.append(utils.tonp(e))
