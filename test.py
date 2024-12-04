@@ -26,7 +26,7 @@ def get_svm_params():
     # Define the parameter grid
     kernel_types = ["linear", "rbf", "poly", "sigmoid"]
     C_values = [0.1, 1, 10, 100]
-    gamma_values = ["scale", "auto", 0.001, 0.01, 0.1]
+    gamma_values = [0.001, 0.01, 0.1]
     degrees = [2, 3, 4, 10]  # Relevant for 'poly' kernel
     coef0_values = [0, 0.5, 1]  # Used in 'poly' and 'sigmoid' kernels
     # Generate all combinations of parameters
