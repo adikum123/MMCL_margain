@@ -20,7 +20,7 @@ model_id: -1
 name: eval_imagenet_newmodels
 node_rank: 0
 opt: sgd
-precompute_emb_bs: 1024
+precompute_emb_bs: 512
 problem: eval
 save_freq: 10000000000000000
 scale_lower: 0.08
