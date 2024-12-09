@@ -64,7 +64,7 @@ class SVMSolver:
             for test_point in self.test_loader:
                 X = np.vstack((test_point[0], train_data))
                 Y = np.vstack(
-                    (np.ones(1, 1), -np.ones(len(self.train_loader.dataset, 1)))
+                    (np.ones((1, 1)), -np.ones((len(self.train_loader.dataset, 1))))
                 )
                 # Train SVM using the stored parameters
                 model = SVC(**params)
