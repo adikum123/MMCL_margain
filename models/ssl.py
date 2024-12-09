@@ -957,30 +957,41 @@ class SSLEval(BaseSSL):
             trainsampler = torch.utils.data.RandomSampler(self.trainset)
             testsampler = torch.utils.data.SequentialSampler(self.testset)
 
-        self.object_trainsampler = trainsampler
-        trainsampler = torch.utils.data.BatchSampler(
-            self.object_trainsampler,
-            batch_size=self.hparams.batch_size,
-            drop_last=False,
-        )
-        if iters is not None:
-            trainsampler = datautils.ContinousSampler(trainsampler, iters)
+        if load_whole_trainset:
+            # Load the entire trainset in one batch
+            trainsampler = torch.utils.data.SequentialSampler(self.trainset)
+            train_loader = torch.utils.data.DataLoader(
+                self.trainset,
+                num_workers=self.hparams.workers,
+                pin_memory=True,
+                sampler=trainsampler,
+                batch_size=len(self.trainset),  # One batch with the entire dataset
+            )
+        else:
+            self.object_trainsampler = trainsampler
+            trainsampler = torch.utils.data.BatchSampler(
+                self.object_trainsampler,
+                batch_size=self.hparams.batch_size,
+                drop_last=False,
+            )
+            if iters is not None:
+                trainsampler = datautils.ContinousSampler(trainsampler, iters)
 
-        train_loader = torch.utils.data.DataLoader(
-            self.trainset,
+            train_loader = torch.utils.data.DataLoader(
+                self.trainset,
+                num_workers=self.hparams.workers,
+                pin_memory=True,
+                batch_sampler=trainsampler,
+            )
+
+        test_loader = torch.utils.data.DataLoader(
+            self.testset,
             num_workers=self.hparams.workers,
             pin_memory=True,
-            batch_sampler=trainsampler,
+            sampler=testsampler,
+            batch_size=self.hparams.test_bs,
         )
-
-    test_loader = torch.utils.data.DataLoader(
-        self.testset,
-        num_workers=self.hparams.workers,
-        pin_memory=True,
-        sampler=testsampler,
-        batch_size=self.hparams.test_bs,
-    )
-    return train_loader, test_loader
+        return train_loader, test_loader
 
     def transforms(self):
         if self.hparams.data == "cifar":
