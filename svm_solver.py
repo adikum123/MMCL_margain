@@ -10,10 +10,46 @@ from sklearn.svm import SVC
 
 
 class SVMSolver:
-    def __init__(self, train_loader, test_loader, svm_params_list):
-        self.svm_params_list = svm_params_list
+
+    def __init__(self, train_loader, test_loader):
         self.train_loader = train_loader
         self.test_loader = test_loader
+
+    @staticmethod
+    def get_svm_params():
+        # Define the parameter grid
+        kernel_types = ["linear", "rbf", "poly", "sigmoid"]
+        C_values = [0.1, 1, 10, 100]
+        gamma_values = [0.001, 0.01, 0.1]
+        degrees = [2, 3, 4, 10]
+        coef0_values = [0, 0.5, 1]
+        params = []
+        for kernel in kernel_types:
+            if kernel == "linear":
+                for C in C_values:
+                    params.append({"kernel": kernel, "C": C})
+            elif kernel == "rbf":
+                for C, gamma in product(C_values, gamma_values):
+                    params.append({"kernel": kernel, "C": C, "gamma": gamma})
+            elif kernel == "poly":
+                for C, gamma, degree, coef0 in product(
+                    C_values, gamma_values, degrees, coef0_values
+                ):
+                    params.append(
+                        {
+                            "kernel": kernel,
+                            "C": C,
+                            "gamma": gamma,
+                            "degree": degree,
+                            "coef0": coef0,
+                        }
+                    )
+            elif kernel == "sigmoid":
+                for C, gamma, coef0 in product(C_values, gamma_values, coef0_values):
+                    params.append(
+                        {"kernel": kernel, "C": C, "gamma": gamma, "coef0": coef0}
+                    )
+        return params
 
     def compute_margin(self):
         # Combine all of training data
@@ -21,7 +57,7 @@ class SVMSolver:
         train_data = np.vstack(all_batches)
         # iterate through all svm params and compute necessary margins
         result = dict()
-        for params in svm_params:
+        for params in SVMSolver.get_svm_params():
             params_key = str(params)
             result[params_key] = defaultdict(list)
             for test_point, _ in self.test_loader:
