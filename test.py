@@ -1,5 +1,4 @@
 import json
-from itertools import product
 
 import torch
 import yaml
