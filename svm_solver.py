@@ -61,8 +61,8 @@ class SVMSolver:
         for params in SVMSolver.get_svm_params():
             params_key = str(params)
             result[params_key] = defaultdict(list)
-            for test_point, _ in self.test_loader:
-                X = np.vstack((test_point, train_data))
+            for test_point in self.test_loader:
+                X = np.vstack((test_point[0], train_data))
                 Y = np.vstack((np.ones(1), -np.ones(len(self.train_loader))))
                 # Train SVM using the stored parameters
                 model = SVC(**params)
