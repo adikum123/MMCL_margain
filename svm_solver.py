@@ -11,8 +11,6 @@ from sklearn.svm import SVC
 
 class SVMSolver:
     def __init__(self, train_loader, test_loader, svm_params_list):
-        self.positive_samples = positive_batch[0]
-        self.negative_samples = negative_batch[0]
         self.svm_params_list = svm_params_list
         self.train_loader = train_loader
         self.test_loader = test_loader
