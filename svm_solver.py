@@ -17,14 +17,14 @@ class SVMSolver:
 
     def compute_margin(self):
         # Combine all of training data
-        all_batches = [x for x in self.train_loader]
+        all_batches = [x[0] for x in self.train_loader]
         train_data = np.vstack(all_batches)
         # iterate through all svm params and compute necessary margins
         result = dict()
         for params in svm_params:
             params_key = str(params)
             result[params_key] = defaultdict(list)
-            for test_point, label in self.test_loader:
+            for test_point, _ in self.test_loader:
                 X = np.vstack((test_point, train_data))
                 Y = np.vstack((np.ones(1), -np.ones(len(self.train_loader))))
                 # Train SVM using the stored parameters
