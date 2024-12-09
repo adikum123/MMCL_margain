@@ -1,7 +1,7 @@
 arch: linear
 aug: true
 augmentation: RandomResizedCrop
-batch_size: 10000
+batch_size: 4096
 ckpt: ''
 ckpt_iter: -1
 config_file: null
@@ -20,12 +20,12 @@ model_id: -1
 name: eval_imagenet_newmodels
 node_rank: 0
 opt: sgd
-precompute_emb_bs: 100
+precompute_emb_bs: 4096
 problem: eval
 save_freq: 10000000000000000
 scale_lower: 0.08
 seed: -1
-test_bs: 4096
+test_bs: 1
 tmp: false
 warmup: 0.0
 weight_decay: 0.0
