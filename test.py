@@ -85,15 +85,7 @@ print(f"========> Using device in test.py: {device}")
 model = SSLEval(hparams=hparams, device=device)
 model.prepare_data_new(train_size=hparams.batch_size, test_size=1)
 train_loader, test_loader = model.dataloaders()
-for test_batch in test_loader:
-    for train_batch in train_loader:
-        for svm_params in get_svm_params():
-            svm_solver = SVMSolver(
-                positive_batch=test_batch,
-                negative_batch=train_batch,
-                **svm_params,
-            )
-            margin = svm_solver.compute_margin()
-            print(f"For params: {svm_params} margain is: {margin}")
-            with open(output_file, "a") as f:
-                f.write(f"{str(svm_params):<50} | {margin:<20.4f}\n")
+svm_solver = SVMSolver(
+    train_loader=train_loader, test_loader=test_loader, svm_params_list=get_svm_params()
+)
+svm_solver.compute_margin()

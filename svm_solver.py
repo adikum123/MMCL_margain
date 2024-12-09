@@ -1,5 +1,7 @@
 import argparse
 import math
+import pickle
+from collections import defaultdict
 
 import numpy as np
 import torch
@@ -8,49 +10,44 @@ from sklearn.svm import SVC
 
 
 class SVMSolver:
-    def __init__(
-        self,
-        positive_batch,
-        negative_batch,
-        **svm_params,  # Accept any SVM parameters dynamically
-    ):
-        # Store positive and negative samples
+    def __init__(self, train_loader, test_loader, svm_params_list):
         self.positive_samples = positive_batch[0]
         self.negative_samples = negative_batch[0]
-        # Store SVM parameters (e.g., kernel, C, degree, gamma, etc.)
-        self.svm_params = svm_params
+        self.svm_params_list = svm_params_list
+        self.train_loader = train_loader
+        self.test_loader = test_loader
 
     def compute_margin(self):
-        # Assign labels: 1 for positive samples, -1 for negative samples
-        positive_labels = np.ones(len(self.positive_samples))
-        negative_labels = -np.ones(len(self.negative_samples))
-        # Combine positive and negative samples into X
-        X = np.vstack((self.positive_samples, self.negative_samples))
-        # Combine positive and negative labels into Y
-        Y = np.hstack((positive_labels, negative_labels))
-        # Train SVM using the stored parameters
-        model = SVC(**self.svm_params)
-        model.fit(X, Y)
-        # Extract support vectors and dual coefficients
-        support_vectors = model.support_vectors_
-        dual_coefs = model.dual_coef_[0]  # Shape is (1, n_support_vectors)
-        # Kernel parameters for pairwise computation
-        kernel_params = {
-            key: self.svm_params[key]
-            for key in ["gamma", "degree", "coef0"]
-            if key in self.svm_params
-        }
-        # Compute the kernel matrix for the support vectors only
-        kernel_matrix = pairwise_kernels(
-            X=support_vectors,
-            metric=self.svm_params["kernel"],
-            **kernel_params,
-        )
-        # Compute the norm of the weight vector in feature space
-        w_norm_sq = np.dot(np.dot(dual_coefs, kernel_matrix), dual_coefs.T)
-        # Calculate and return the margin
-        if w_norm_sq > 0:
-            return 1 / math.sqrt(w_norm_sq)
-        else:
-            print(f"Suspicious norm squared: {w_norm_sq}")
-            return -1
+        # Combine all of training data
+        all_batches = [x for x in self.train_loader]
+        train_data = np.vstack(all_batches)
+        # iterate through all svm params and compute necessary margins
+        result = dict()
+        for params in svm_params:
+            params_key = str(params)
+            result[params_key] = defaultdict(list)
+            for test_point, label in self.test_loader:
+                X = np.vstack((test_point, train_data))
+                Y = np.vstack((np.ones(1), -np.ones(len(self.train_loader))))
+                # Train SVM using the stored parameters
+                model = SVC(**params)
+                model.fit(X, Y)
+                # Extract support vectors and dual coefficients
+                support_vectors = model.support_vectors_
+                dual_coefs = model.dual_coef_[0]
+                kernel_params = {
+                    key: params[key]
+                    for key in ["gamma", "degree", "coef0"]
+                    if key in params
+                }
+                # Compute the kernel matrix for the support vectors only and norm
+                kernel_matrix = pairwise_kernels(
+                    X=support_vectors,
+                    metric=params["kernel"],
+                    **kernel_params,
+                )
+                w_norm_sq = np.dot(np.dot(dual_coefs, kernel_matrix), dual_coefs.T)
+                if w_norm_sq > 0:
+                    result[params_key].append(1 / math.sqrt(w_norm_sq))
+        with pickle.open("results_dict.pkl", "wb") as f:
+            pickle.dump(result, f)
