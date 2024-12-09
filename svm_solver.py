@@ -1,7 +1,6 @@
 import argparse
 import math
 import pickle
-from collections import defaultdict
 from itertools import product
 
 import numpy as np
@@ -60,7 +59,7 @@ class SVMSolver:
         result = dict()
         for params in SVMSolver.get_svm_params():
             params_key = str(params)
-            result[params_key] = defaultdict(list)
+            result[params_key] = []
             for test_point in self.test_loader:
                 X = np.vstack((test_point[0], train_data))
                 Y = np.vstack(
