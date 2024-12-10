@@ -3,4 +3,4 @@ numpy
 diffdist
 scikit-learn
 torchvision
-t
+thundersvm
