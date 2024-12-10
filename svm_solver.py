@@ -5,6 +5,7 @@ from itertools import product
 
 import numpy as np
 import torch
+import tqdm
 from sklearn.metrics.pairwise import pairwise_kernels
 from sklearn.svm import SVC
 
@@ -57,7 +58,7 @@ class SVMSolver:
         train_data = np.vstack(all_batches)
         # iterate through all svm params and compute necessary margins
         result = dict()
-        for params in SVMSolver.get_svm_params():
+        for params in tqdm.tqdm(SVMSolver.get_svm_params()):
             params_key = str(params)
             result[params_key] = []
             for test_point in self.test_loader:
@@ -67,7 +68,7 @@ class SVMSolver:
                 )
                 # Train SVM using the stored parameters
                 model = SVC(**params)
-                model.fit(X, Y)
+                model.fit(X, Y.ravel())
                 # Extract support vectors and dual coefficients
                 support_vectors = model.support_vectors_
                 dual_coefs = model.dual_coef_[0]
