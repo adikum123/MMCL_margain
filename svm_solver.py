@@ -7,7 +7,7 @@ import numpy as np
 import torch
 import tqdm
 from sklearn.metrics.pairwise import pairwise_kernels
-from sklearn.svm import SVC
+from thundersvm import SVC
 
 
 class SVMSolver:
