@@ -58,10 +58,11 @@ class SVMSolver:
         train_data = np.vstack(all_batches)
         # iterate through all svm params and compute necessary margins
         result = dict()
-        for params in tqdm.tqdm(SVMSolver.get_svm_params()):
+        for params in SVMSolver.get_svm_params():
             params_key = str(params)
+            print(f"Computing margins for: {params_key}")
             result[params_key] = []
-            for test_point in self.test_loader:
+            for test_point in tqdm.tqdm(self.test_loader):
                 X = np.vstack((test_point[0], train_data))
                 Y = np.vstack(
                     (np.ones((1, 1)), -np.ones((len(self.train_loader.dataset), 1)))

@@ -964,7 +964,7 @@ class SSLEval(BaseSSL):
             num_workers=self.hparams.workers,
             pin_memory=True,
             sampler=trainsampler,
-            batch_size=len(self.trainset),  # One batch with the entire dataset
+            batch_size=self.hparams.batch_size,  # One batch with the entire dataset
         )
         self.object_trainsampler = trainsampler
         trainsampler = torch.utils.data.BatchSampler(
