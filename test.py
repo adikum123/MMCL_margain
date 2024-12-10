@@ -38,7 +38,7 @@ for arg, value in arguments.items():
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"========> Using device in test.py: {device}")
 model = SSLEval(hparams=hparams, device=device)
-model.prepare_data()
+model.prepare_data_new(train_size=10000, test_size=1)
 train_loader, test_loader = model.dataloaders()
 svm_solver = SVMSolver(train_loader=train_loader, test_loader=test_loader)
 svm_solver.compute_margin()
